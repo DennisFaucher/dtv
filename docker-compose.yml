@@ -15,8 +15,8 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
     volumes:
       - ./data:/usr/src/app/data
-      - /media/asustor/Plex:/media:ro
-      - /media/asustor/Plex/DTV/Conversions:/conversions:rw
+      - /path/to/media:/media:ro
+      - /path/to/media/Conversions:/conversions:rw
     deploy:
       resources:
         reservations:
