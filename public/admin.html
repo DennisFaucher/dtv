@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DTV - Admin Panel</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Header -->
+    <header>
+      <div class="logo-container">
+        <a href="/"><img src="/DTV_Logo.png" alt="DTV" class="logo-img"></a>
+        <span style="font-size: 0.9rem; color: var(--text-muted); border-left: 1px solid var(--border-color); padding-left: 10px; margin-left: 5px;">Admin Dashboard</span>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn btn-secondary btn-sm">Back to Player</a>
+      </div>
+    </header>
+
+    <!-- Content Workspace -->
+    <main class="content-area">
+      <div class="admin-grid">
+        
+        <!-- User Registration Requests -->
+        <div class="admin-card">
+          <div class="admin-card-title">
+            <span>Pending Approvals</span>
+            <span id="pending-count" class="folder-type" style="background: rgba(16, 185, 129, 0.15); color: var(--success); margin: 0;">0 Users</span>
+          </div>
+          <div id="pending-users-list" class="requests-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- User Management -->
+        <div class="admin-card" style="grid-column: span 2;">
+          <div class="admin-card-title">
+            <span>User Management</span>
+            <span id="user-count" class="folder-type" style="background: rgba(99,102,241,0.15); color: var(--accent-primary); margin: 0;">0 Users</span>
+          </div>
+          <div id="users-list" class="requests-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Media Folder Management -->
+        <div class="admin-card">
+          <div class="admin-card-title">Manage Media Folders</div>
+          
+          <form id="add-folder-form" onsubmit="handleAddFolder(event)" style="margin-bottom: 25px;">
+            <div class="form-group">
+              <label for="folder-path">Directory Path on Server</label>
+              <input type="text" id="folder-path" class="form-control" required placeholder="e.g. /media/movies">
+            </div>
+            
+            <div class="form-group">
+              <label for="folder-type">Media Category</label>
+              <select id="folder-type" class="form-control" style="background: rgba(0, 0, 0, 0.4);" required>
+                <option value="movie">Movies</option>
+                <option value="tv">TV Shows</option>
+                <option value="music">Music</option>
+              </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Add Media Folder</button>
+          </form>
+
+          <div id="folder-alert" class="alert" style="margin-top: 15px;"></div>
+
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 15px; color: var(--text-muted);">Configured Folders</h3>
+          <div id="folders-list" class="folders-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Auto-Scan Intervals -->
+        <div class="admin-card" style="grid-column: span 2;">
+          <div class="admin-card-title">Auto-Scan Intervals</div>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">Automatically re-scan each library on a schedule. Set to <strong>Disabled</strong> to scan manually only.</p>
+
+          <div class="scan-interval-grid">
+            <div class="scan-interval-row">
+              <label class="scan-interval-label">
+                <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+                Movies
+              </label>
+              <select id="interval-movie" class="form-control interval-select">
+                <option value="0">Disabled</option>
+                <option value="30">Every 30 minutes</option>
+                <option value="60">Every hour</option>
+                <option value="360">Every 6 hours</option>
+                <option value="720">Every 12 hours</option>
+                <option value="1440">Every 24 hours</option>
+              </select>
+            </div>
+            <div class="scan-interval-row">
+              <label class="scan-interval-label">
+                <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+                TV Shows
+              </label>
+              <select id="interval-tv" class="form-control interval-select">
+                <option value="0">Disabled</option>
+                <option value="30">Every 30 minutes</option>
+                <option value="60">Every hour</option>
+                <option value="360">Every 6 hours</option>
+                <option value="720">Every 12 hours</option>
+                <option value="1440">Every 24 hours</option>
+              </select>
+            </div>
+            <div class="scan-interval-row">
+              <label class="scan-interval-label">
+                <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                Music
+              </label>
+              <select id="interval-music" class="form-control interval-select">
+                <option value="0">Disabled</option>
+                <option value="30">Every 30 minutes</option>
+                <option value="60">Every hour</option>
+                <option value="360">Every 6 hours</option>
+                <option value="720">Every 12 hours</option>
+                <option value="1440">Every 24 hours</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:14px; margin-top:20px;">
+            <button class="btn btn-primary" onclick="saveScanIntervals()" style="width:auto;">Save Intervals</button>
+            <span id="interval-save-msg" style="font-size:0.85rem; color:var(--success); display:none;">Saved!</span>
+          </div>
+        </div>
+
+        <!-- Recursive Media Scanner -->
+        <div class="admin-card" style="grid-column: span 2;">
+          <div class="admin-card-title">Media Library Scanner</div>
+          
+          <div class="scan-status-container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <span style="font-weight: 500;">Scanner Status:</span>
+                <span id="scan-status-badge" class="folder-type" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); font-size: 0.85rem;">Idle</span>
+              </div>
+              <button id="scan-trigger-btn" onclick="triggerScan()" class="btn btn-primary" style="width: auto;">Scan Media Libraries</button>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="scan-progress-bar">
+              <div id="scan-progress-fill" class="scan-progress-fill"></div>
+            </div>
+
+            <!-- Stats -->
+            <div class="scan-stats-grid">
+              <div class="scan-stat-card">
+                <div id="stat-processed" class="scan-stat-value">0</div>
+                <div class="scan-stat-label">Processed</div>
+              </div>
+              <div class="scan-stat-card">
+                <div id="stat-added" class="scan-stat-value" style="color: var(--success);">0</div>
+                <div class="scan-stat-label">Added</div>
+              </div>
+              <div class="scan-stat-card">
+                <div id="stat-removed" class="scan-stat-value" style="color: var(--danger);">0</div>
+                <div class="scan-stat-label">Removed</div>
+              </div>
+            </div>
+
+            <div id="scan-errors-container" style="display: none; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+              <h4 style="font-size: 0.9rem; color: var(--danger); font-weight: 600; margin-bottom: 8px;">Scan Warnings/Errors:</h4>
+              <ul id="scan-errors-list" style="color: #fca5a5; font-size: 0.85rem; padding-left: 20px; line-height: 1.4;">
+                <!-- Error logs -->
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

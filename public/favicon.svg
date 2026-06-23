@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Screen body -->
+  <rect x="3" y="8" width="26" height="17" rx="3" ry="3" fill="#6366f1"/>
+  <!-- Screen inner (display area) -->
+  <rect x="6" y="11" width="20" height="11" rx="1" ry="1" fill="#09090b"/>
+  <!-- Play triangle on screen -->
+  <polygon points="13,13.5 13,19.5 20,16.5" fill="#a855f7"/>
+  <!-- Stand neck -->
+  <rect x="14" y="25" width="4" height="3" rx="1" fill="#6366f1"/>
+  <!-- Stand base -->
+  <rect x="10" y="28" width="12" height="2" rx="1" fill="#6366f1"/>
+</svg>

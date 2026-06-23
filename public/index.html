@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DTV - Stream & Download</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Header -->
+    <header>
+      <div class="logo-container">
+        <a href="#" onclick="filterMedia(''); return false;"><img src="/DTV_Logo.png" alt="DTV" class="logo-img"></a>
+      </div>
+      <div class="header-actions">
+        <span class="user-email" id="user-display">Loading profile...</span>
+        <a href="admin.html" id="admin-link" class="btn btn-secondary btn-sm" style="display: none;">Admin Panel</a>
+        <button onclick="handleLogout()" class="btn btn-secondary btn-sm">Logout</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="main-wrapper">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <nav class="nav-menu">
+          <div class="nav-item active" id="nav-all" onclick="filterMedia('')">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            <span>All Media</span>
+          </div>
+          <div class="nav-item" id="nav-movie" onclick="filterMedia('movie')">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+            <span>Movies</span>
+          </div>
+          <div class="nav-item" id="nav-tv" onclick="filterMedia('tv')">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+            <span>TV Shows</span>
+          </div>
+          <div class="nav-item" id="nav-music" onclick="filterMedia('music')">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+            <span>Music</span>
+          </div>
+        </nav>
+
+        <!-- Resume Section -->
+        <div class="resume-section" id="resume-section">
+          <div class="resume-header">Continue Watching</div>
+          <div id="resume-list"></div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="content-area">
+        <div class="content-header">
+          <div id="view-title-wrap">
+            <h2 id="view-title">All Media</h2>
+            <nav id="tv-breadcrumb" class="tv-breadcrumb" style="display:none;"></nav>
+          </div>
+          <div class="content-header-right">
+            <div class="search-bar">
+              <input type="text" id="search-input" class="search-input" placeholder="Search titles..." oninput="handleSearch(this.value)">
+              <svg style="width: 20px; height: 20px; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <div class="sort-controls" id="sort-controls">
+              <select id="sort-select" class="sort-select" onchange="handleSortChange()">
+                <option value="">Title (A–Z)</option>
+                <option value="release_date">Release Date</option>
+                <option value="added_date">Added Date</option>
+              </select>
+              <button id="sort-order-btn" class="sort-order-btn" title="Reverse sort order" onclick="toggleSortOrder()">
+                <svg id="sort-order-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9M3 12h5m10 4V6m0 0l-3 3m3-3l3 3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="media-grid" id="media-grid">
+          <!-- Dynamically filled -->
+        </div>
+
+        <div class="empty-state" id="empty-state" style="display: none;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          <h3>No Media Found</h3>
+          <p>Please configure media folders and trigger a scan in the Admin Panel.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Tab Bar -->
+  <nav class="mobile-tabs" id="mobile-tabs">
+    <div class="mobile-tab active" id="mtab-all" onclick="filterMedia('')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+      <span>All</span>
+    </div>
+    <div class="mobile-tab" id="mtab-movie" onclick="filterMedia('movie')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+      <span>Movies</span>
+    </div>
+    <div class="mobile-tab" id="mtab-tv" onclick="filterMedia('tv')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+      <span>TV</span>
+    </div>
+    <div class="mobile-tab" id="mtab-music" onclick="filterMedia('music')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+      <span>Music</span>
+    </div>
+  </nav>
+
+  <!-- Player Overlay -->
+  <div class="player-overlay" id="player-overlay" onclick="closePlayerOnOutsideClick(event)">
+    <div class="player-container">
+      <div class="player-header">
+        <h3 class="player-title" id="player-title">Title</h3>
+        <button class="close-player" onclick="closePlayer()">&times;</button>
+      </div>
+      
+      <div class="media-viewport" id="media-viewport">
+        <!-- Video or Audio will be injected here -->
+      </div>
+
+      <div class="player-controls-panel">
+        <div class="actions-row">
+          <div class="media-actions-left">
+            <a href="#" id="player-download-btn" class="btn btn-primary btn-sm" download>
+              <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              <span>Download Media</span>
+            </a>
+          </div>
+          <div id="version-actions" style="display:none; gap:8px; align-items:center;">
+            <button id="btn-original" class="btn btn-secondary btn-sm" onclick="playVersion('original')">Original</button>
+            <button id="btn-convert" class="btn btn-secondary btn-sm" onclick="handleConvertBtn()">Convert</button>
+          </div>
+        </div>
+
+        <!-- Subtitles block for Video -->
+        <div class="subtitles-section" id="subtitles-section" style="display: none;">
+          <div class="subtitles-header">
+            <h4>Subtitles</h4>
+            <div class="subtitle-sync-controls">
+              <span class="subtitle-sync-label">Sync</span>
+              <button class="subtitle-sync-btn" onclick="shiftSubtitles(-0.5)" title="Shift earlier by 0.5s">− 0.5s</button>
+              <button class="subtitle-sync-btn" onclick="shiftSubtitles(-0.1)" title="Shift earlier by 0.1s">− 0.1s</button>
+              <span class="subtitle-offset-display" id="subtitle-offset-display">0.0s</span>
+              <button class="subtitle-sync-btn" onclick="shiftSubtitles(0.1)" title="Shift later by 0.1s">+ 0.1s</button>
+              <button class="subtitle-sync-btn" onclick="shiftSubtitles(0.5)" title="Shift later by 0.5s">+ 0.5s</button>
+              <button class="subtitle-sync-btn subtitle-sync-reset" onclick="resetSubtitleSync()" title="Reset to original timing">Reset</button>
+            </div>
+          </div>
+          <div class="subtitle-list" id="subtitle-list">
+            <!-- Active Subtitles tracks -->
+          </div>
+
+          <!-- OpenSubtitles lookup block -->
+          <div class="opensubtitles-lookup-box">
+            <div class="opensubtitles-search">
+              <input type="text" id="os-search-input" class="form-control" style="flex-grow: 1;" placeholder="Lookup subtitle title...">
+              <button class="btn btn-secondary btn-sm" onclick="lookupOpenSubtitles()" style="width: auto;">Search OpenSubtitles</button>
+            </div>
+            
+            <div id="os-loading-indicator" style="display: none; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Searching OpenSubtitles...</div>
+            <div id="os-error-indicator" style="display: none; font-size: 0.85rem; color: var(--danger); margin-bottom: 10px;"></div>
+
+            <div class="opensubtitles-results" id="os-results">
+              <!-- Results go here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TMDB Info Modal -->
+  <div class="modal-overlay" id="tmdb-modal" onclick="closeTmdbModalOnOutside(event)" style="display:none;">
+    <div class="modal-box tmdb-modal-box">
+      <div class="modal-header">
+        <h3 id="tmdb-modal-title">Movie Info</h3>
+        <button class="close-player" onclick="closeTmdbModal()">&times;</button>
+      </div>
+      <div id="tmdb-modal-body" class="tmdb-modal-body">
+        <div class="tmdb-loading">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Poster URL Modal -->
+  <div class="modal-overlay" id="poster-modal" onclick="closePosterModalOnOutside(event)" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="poster-modal-heading">Edit Media</h3>
+        <button class="close-player" onclick="closePosterModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="poster-title-row">
+          <label class="form-label">Display Title</label>
+          <input type="text" id="poster-title-input" class="form-control" placeholder="Movie title...">
+        </div>
+        <label class="form-label" style="margin-top: 12px;">Poster Image URL</label>
+        <input type="url" id="poster-url-input" class="form-control" placeholder="https://... (leave blank to keep current)">
+        <div id="poster-error" style="display:none; color: var(--danger); font-size: 0.85rem; margin-top: 8px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="closePosterModal()">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="savePoster()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
+  <!-- Butterchurn: WebGL port of WinAmp MilkDrop 2 for music visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/butterchurn@2.6.7/lib/butterchurn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/butterchurn-presets@2.4.7/lib/butterchurnPresets.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
