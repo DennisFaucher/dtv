@@ -4,7 +4,7 @@ DTV is a self-hosted streaming server for movies, TV shows, and music. Built wit
 
 (Vibe-coded by me and claude.ai)
 
-![DTV Screenshot](public/DTV_Logo.png)
+<img width="1231" height="845" alt="DTV - Blurred" src="https://github.com/user-attachments/assets/e0931158-56e1-4103-a33e-3e53420ee4a6" />
 
 ## Features
 
