@@ -2,6 +2,8 @@
 
 DTV is a self-hosted streaming server for movies, TV shows, and music. Built with Node.js/Express and SQLite, it runs as a single Docker container and streams directly to any browser — no client app required.
 
+(Vibe-coded by me and claude.ai)
+
 ![DTV Screenshot](public/DTV_Logo.png)
 
 ## Features
